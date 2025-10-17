@@ -1,26 +1,39 @@
 import Square from "./Square";
+import useGameStore from "../store";
 
 export default function Board() {
+  const xIsNext = useGameStore((state) => state.xIsNext);
+  const setXIsNext = useGameStore((state)=> state.setXIsNext)
+  const squares = useGameStore((state) => state.squares);
+  const setSquares = useGameStore((state) => state.setSquares);
+  const player = xIsNext ? "X" : "O"
+
+  function handleClick(i) {
+    if (squares[i]) return;
+    const nextSquares = squares.slice();
+    nextSquares[i] = player;
+    setSquares(nextSquares);
+    setXIsNext(!xIsNext)
+  }
+
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(3, 1fr)',
-        width: 'calc(3 * 2.5rem)',
-        height: 'calc(3 * 2.5rem)',
-        border: '1px solid #999',
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gridTemplateRows: "repeat(3, 1fr)",
+        width: "calc(3 * 2.5rem)",
+        height: "calc(3 * 2.5rem)",
+        border: "1px solid #999",
       }}
     >
-      <Square value="1" onSquareClick={()=>{}} />
-      <Square value="2" onSquareClick={()=>{}} />
-      <Square value="3" onSquareClick={()=>{}} />
-      <Square value="4" onSquareClick={()=>{}} />
-      <Square value="5" onSquareClick={()=>{}} />
-      <Square value="6" onSquareClick={()=>{}} />
-      <Square value="7" onSquareClick={()=>{}} />
-      <Square value="8" onSquareClick={()=>{}} />
-      <Square value="9" onSquareClick={()=>{}} />
+      {squares.map((square, index) => (
+        <Square
+          key={index}
+          value={square}
+          onSquareClick={() => handleClick(index)}
+        />
+      ))}
     </div>
-  )
+  );
 }
